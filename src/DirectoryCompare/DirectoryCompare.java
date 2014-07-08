@@ -1,8 +1,13 @@
 package DirectoryCompare;
 
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
+
 import javax.swing.JFileChooser;
+
+import CommonTools.CommonTools;
 
 public class DirectoryCompare {
 	
@@ -12,13 +17,15 @@ public class DirectoryCompare {
 
 	//TODO Write output to a text file, rather than to the console
 	//TODO Add comments
+	//TODO Abstract the File object so that FTP support can be added
+	//TODO Add FTP support
 	//TODO Redesign with an object-oriented design?
 	public static void main(String[] args) {
 		
 		CompareDirectories myDirs = new CompareDirectories();
 		
 		compareDirectories(myDirs);
-		displayResults();
+		writeResults();
 		
 	}
 	
@@ -33,26 +40,37 @@ public class DirectoryCompare {
 		
 	}
 	
-	private static void displayResults(){
+	private static void writeResults(){
+		BufferedWriter bw = CommonTools.openWriteFile("out/results.txt");
 		
-		System.out.println("Doesn't Exist Results:");
-		for(File file : mDoesntExistResults){
-			System.out.println(file.getAbsoluteFile());
+		writeResultType(bw, mDoesntExistResults, "Doesn't Exist Results:");
+		writeResultType(bw, mDifferentSizeResults, "Different Size Results:");
+		writeResultType(bw, mDifferentDateResults, "Different Date Results:");
+		
+		try {
+			bw.close();
+		} catch (IOException e) {
+			CommonTools.processError("Error closing Result Writer");
 		}
-		System.out.println("");
 		
-		System.out.println("Different Size Results:");
-		for(File file : mDifferentSizeResults){
-			System.out.println(file.getAbsoluteFile());
+		System.out.println("Finished...");
+		
+		//TODO Print the exact location of the results
+		
+	}
+	
+	private static void writeResultType(BufferedWriter writer, ArrayList<File> resultFiles, String headerLine){
+		try {
+			writer.write(headerLine);
+			writer.newLine();
+			for(File file : resultFiles){
+				writer.write(file.getAbsolutePath());
+				writer.newLine();
+			}
+			writer.newLine();
+		} catch (IOException e) {
+			CommonTools.processError("Error writing results to file.");
 		}
-		System.out.println("");
-		
-		System.out.println("Different Date Results:");
-		for(File file : mDifferentDateResults){
-			System.out.println(file.getAbsoluteFile());
-		}
-		System.out.println("");
-		
 	}
 	
 	private static void startDirectoryTraversal(File sourceDir, File targetDir, boolean firstCheck){
