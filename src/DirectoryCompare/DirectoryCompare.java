@@ -15,7 +15,7 @@ public class DirectoryCompare {
 	private static ArrayList<File> mDifferentSizeResults = new ArrayList<File>();
 	private static ArrayList<File> mDifferentDateResults = new ArrayList<File>();
 
-	//TODO Write output to a text file, rather than to the console
+	//TODO Add some sort of "in-progress" indicator
 	//TODO Add comments
 	//TODO Abstract the File object so that FTP support can be added
 	//TODO Add FTP support
