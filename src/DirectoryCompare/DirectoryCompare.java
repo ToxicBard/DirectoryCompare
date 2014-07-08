@@ -1,12 +1,19 @@
 package DirectoryCompare;
 
 import java.io.File;
+import java.util.ArrayList;
 import javax.swing.JFileChooser;
 
 public class DirectoryCompare {
+	
+	private static ArrayList<File> mDoesntExistResults = new ArrayList<File>();
+	private static ArrayList<File> mDifferentSizeResults = new ArrayList<File>();
+	private static ArrayList<File> mDifferentDateResults = new ArrayList<File>();
 
 	//TODO Implement directory saving
-	//TODO Add some sort of result organization/sorting
+	//TODO Write output to a text file, rather than to the console
+	//TODO Add comments
+	//TODO Redesign with an object-oriented design?
 	public static void main(String[] args) {
 		
 		String formerDirectory;
@@ -32,6 +39,7 @@ public class DirectoryCompare {
 		}
 		
 		compareDirectories(formerDirectory, latterDirectory);
+		displayResults();
 		
 	}
 	
@@ -43,6 +51,28 @@ public class DirectoryCompare {
 		
 		System.out.println("Checking latter directory...");
 		traverseDirectory(latterDirectory, formerDirectory, false);
+		
+	}
+	
+	private static void displayResults(){
+		
+		System.out.println("Doesn't Exist Results:");
+		for(File file : mDoesntExistResults){
+			System.out.println(file.getAbsoluteFile());
+		}
+		System.out.println("");
+		
+		System.out.println("Different Size Results:");
+		for(File file : mDifferentSizeResults){
+			System.out.println(file.getAbsoluteFile());
+		}
+		System.out.println("");
+		
+		System.out.println("Different Date Results:");
+		for(File file : mDifferentDateResults){
+			System.out.println(file.getAbsoluteFile());
+		}
+		System.out.println("");
 		
 	}
 	
@@ -68,23 +98,25 @@ public class DirectoryCompare {
 	}
 	
 	private static void processCompareResult(FileComparisonResult compareResult, File sourceFile, boolean firstCheck){
+		
 		switch (compareResult){
-			case doesntExist:	System.out.println("Doesn't Exist: " + sourceFile.getAbsoluteFile());
+			case doesntExist:	mDoesntExistResults.add(sourceFile);
 								break;
 								
 								//This case is only relevant for the first traversal
 			case differentSize:	if(firstCheck){
-									System.out.println("Different Size: " + sourceFile.getAbsoluteFile());
+									mDifferentSizeResults.add(sourceFile);
 								}
 								break;
 								
 								//This case is also only relevant for the first traversal
 			case differentDate:	if(firstCheck){
-									System.out.println("Different Size: " + sourceFile.getAbsoluteFile());
+									mDifferentDateResults.add(sourceFile);
 								}
 								break;
 			case match:			//Do nothing
 		}
+		
 	}
 	
 	private enum FileComparisonResult{
@@ -92,7 +124,7 @@ public class DirectoryCompare {
 	}
 	
 	private static FileComparisonResult compareFiles(File checkFile, String baseSourceDir, String baseTargetDir){
-		String relativeFilePath = checkFile.getAbsolutePath().replaceFirst(baseSourceDir, "");
+		String relativeFilePath = checkFile.getAbsolutePath().replace(baseSourceDir, "");
 		String targetPath = baseTargetDir + relativeFilePath;
 		File targetFile = new File(targetPath);
 		
