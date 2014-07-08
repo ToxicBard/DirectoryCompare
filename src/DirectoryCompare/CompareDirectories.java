@@ -10,6 +10,8 @@ import java.io.IOException;
 
 import javax.swing.JFileChooser;
 
+import CommonTools.CommonTools;
+
 public class CompareDirectories {
 	private File mFormerDirectory;
 	private File mLatterDirectory;
@@ -46,7 +48,7 @@ public class CompareDirectories {
 			try {
 				myFileReader = new FileReader(myFile);
 			} catch (FileNotFoundException e) {
-				DirectoryCompare.processError("Error loading file from disk.");
+				CommonTools.processError("Error loading file from disk.");
 			}
 			
 			//Create a BufferedReader from the already-opened file
@@ -56,7 +58,7 @@ public class CompareDirectories {
 				inputFormerDirectory = br.readLine();
 				inputLatterDirectory = br.readLine();
 			} catch (IOException e) {
-				DirectoryCompare.processError("Error reading File.");
+				CommonTools.processError("Error reading File.");
 			}
 			
 			mFormerDirectory = new File(inputFormerDirectory);
@@ -76,7 +78,7 @@ public class CompareDirectories {
 				br.close();
 				myFileReader.close();
 			} catch (IOException e) {
-				DirectoryCompare.processError("Error closing file reader");
+				CommonTools.processError("Error closing file reader");
 			}
 		}
 		
@@ -99,14 +101,14 @@ public class CompareDirectories {
 				myFile.createNewFile();
 			}
 		} catch (IOException e) {
-			DirectoryCompare.processError("Error creating save file.");
+			CommonTools.processError("Error creating save file.");
 		}
 		
 		//Open the file for writing whether it already existed or not.
 		try {
 			myFileWriter = new FileWriter(myFile);
 		} catch (IOException e1) {
-			DirectoryCompare.processError("Error Opening File Writer.");
+			CommonTools.processError("Error Opening File Writer.");
 		}
 		
 		bw = new BufferedWriter(myFileWriter);
@@ -119,7 +121,7 @@ public class CompareDirectories {
 			bw.newLine();
 			bw.close();
 		} catch (IOException e) {
-			DirectoryCompare.processError("Error writing directories");
+			CommonTools.processError("Error writing directories");
 		}
 		
 	}
@@ -138,13 +140,13 @@ public class CompareDirectories {
 		mFormerDirectory = askUserForDirectory("Select the former directory.", mFormerDirectory);
 		if(mFormerDirectory == null){
 			//If the user didn't pick anything, then we exit the program because we have nothing to go on.
-			DirectoryCompare.processError("You must select the former directory.");
+			CommonTools.processError("You must select the former directory.");
 		}
 		
 		mLatterDirectory = askUserForDirectory("Select the latter directory.", mLatterDirectory);
 		if(mLatterDirectory == null){
 			//If the user didn't pick anything, then we exit the program because we have nothing to go on.
-			DirectoryCompare.processError("You must select the latter directory.");
+			CommonTools.processError("You must select the latter directory.");
 		}
 	}
 	

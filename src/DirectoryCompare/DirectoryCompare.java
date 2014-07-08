@@ -118,10 +118,5 @@ public class DirectoryCompare {
 		}
 		return FileComparisonResult.doesntExist;
 	}
-	
-	public static void processError(String errorText){
-		System.out.println(errorText);
-		System.exit(0);
-	}
 
 }
