@@ -10,47 +10,26 @@ public class DirectoryCompare {
 	private static ArrayList<File> mDifferentSizeResults = new ArrayList<File>();
 	private static ArrayList<File> mDifferentDateResults = new ArrayList<File>();
 
-	//TODO Implement directory saving
 	//TODO Write output to a text file, rather than to the console
 	//TODO Add comments
 	//TODO Redesign with an object-oriented design?
 	public static void main(String[] args) {
 		
-		String formerDirectory;
-		String latterDirectory;
+		CompareDirectories myDirs = new CompareDirectories();
 		
-		//Allow the user to select the directories
-		formerDirectory = chooseDirectory("Select the former directory.");
-		if(formerDirectory != null){
-			System.out.println(formerDirectory);
-		}
-		else{
-			System.out.println("You must select the former directory.");
-			return;
-		}
-		
-		latterDirectory = chooseDirectory("Select the latter directory.");
-		if(latterDirectory != null){
-			System.out.println(latterDirectory);
-		}
-		else{
-			System.out.println("You must select the latter directory.");
-			return;
-		}
-		
-		compareDirectories(formerDirectory, latterDirectory);
+		compareDirectories(myDirs);
 		displayResults();
 		
 	}
 	
-	private static void compareDirectories(String formerDirectory, String latterDirectory){
+	private static void compareDirectories(CompareDirectories compareDirs){
 		System.out.println("Checking former directory...");
-		traverseDirectory(formerDirectory, latterDirectory, true);
+		startDirectoryTraversal(compareDirs.getFormerDirectory(), compareDirs.getLatterDirectory(), true);
 		
 		System.out.println("");
 		
 		System.out.println("Checking latter directory...");
-		traverseDirectory(latterDirectory, formerDirectory, false);
+		startDirectoryTraversal(compareDirs.getLatterDirectory(), compareDirs.getFormerDirectory(), false);
 		
 	}
 	
@@ -76,10 +55,10 @@ public class DirectoryCompare {
 		
 	}
 	
-	private static void traverseDirectory(String sourceDir, String targetDir, boolean firstCheck){
-		File[] myFiles = new File(sourceDir).listFiles();
+	private static void startDirectoryTraversal(File sourceDir, File targetDir, boolean firstCheck){
+		File[] myFiles = sourceDir.listFiles();
 		
-		traverseDirectory(myFiles, sourceDir, targetDir, firstCheck);
+		traverseDirectory(myFiles, sourceDir.getAbsolutePath(), targetDir.getAbsolutePath(), firstCheck);
 		
 	}
 	
@@ -138,21 +117,6 @@ public class DirectoryCompare {
 			return FileComparisonResult.match;
 		}
 		return FileComparisonResult.doesntExist;
-	}
-	
-	private static String chooseDirectory(String dialogTitle){
-		JFileChooser fileChooser = new JFileChooser();
-		
-		fileChooser.setCurrentDirectory(new java.io.File("."));
-		fileChooser.setDialogTitle(dialogTitle);
-		fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-		fileChooser.setAcceptAllFileFilterUsed(false);
-		
-		if(fileChooser.showOpenDialog(fileChooser) == JFileChooser.APPROVE_OPTION){
-			return fileChooser.getSelectedFile().toString();
-		}
-		
-		return null;
 	}
 
 }
