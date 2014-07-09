@@ -12,12 +12,14 @@ import CommonTools.LoadingThread;
 
 public class DirectoryCompare {
 	
-	private static ArrayList<File> mDoesntExistResults = new ArrayList<File>();
-	private static ArrayList<File> mDifferentSizeResults = new ArrayList<File>();
-	private static ArrayList<File> mDifferentDateResults = new ArrayList<File>();
+	private static ArrayList<File> mDoesntExistFileResults = new ArrayList<File>();
+	private static ArrayList<File> mDoesntExistFolderResults = new ArrayList<File>();
+	private static ArrayList<File> mDifferentSizeFileResults = new ArrayList<File>();
+	private static ArrayList<File> mDifferentSizeFolderResults = new ArrayList<File>();
+	private static ArrayList<File> mDifferentDateFileResults = new ArrayList<File>();
 
-	//TODO Add comments
 	//TODO Redesign with an object-oriented design?
+	//TODO Add comments
 	//TODO Abstract the File object so that FTP support can be added
 	//TODO Add FTP support
 	public static void main(String[] args) {
@@ -63,9 +65,11 @@ public class DirectoryCompare {
 		bw = CommonTools.openWriteFile(writeFile);
 		filePath = writeFile.getAbsolutePath();
 		
-		writeResultType(bw, mDoesntExistResults, "Doesn't Exist Results:");
-		writeResultType(bw, mDifferentSizeResults, "Different Size Results:");
-		writeResultType(bw, mDifferentDateResults, "Different Date Results:");
+		writeResultType(bw, mDoesntExistFolderResults, "Doesn't Exist Folder Results:");
+		writeResultType(bw, mDoesntExistFileResults, "Doesn't Exist File Results:");
+		writeResultType(bw, mDifferentSizeFolderResults, "Different Size Folder Results:");
+		writeResultType(bw, mDifferentSizeFileResults, "Different Size File Results:");
+		writeResultType(bw, mDifferentDateFileResults, "Different Date File Results:");
 		
 		try {
 			bw.close();
@@ -80,13 +84,16 @@ public class DirectoryCompare {
 	
 	private static void writeResultType(BufferedWriter writer, ArrayList<File> resultFiles, String headerLine){
 		try {
-			writer.write(headerLine);
-			writer.newLine();
-			for(File file : resultFiles){
-				writer.write(file.getAbsolutePath());
+			//If there are no matches of this type then there's no point in writing anything to file for it.
+			if(resultFiles.size() > 0){
+				writer.write(headerLine);
+				writer.newLine();
+				for(File file : resultFiles){
+					writer.write(file.getAbsolutePath());
+					writer.newLine();
+				}
 				writer.newLine();
 			}
-			writer.newLine();
 		} catch (IOException e) {
 			CommonTools.processError("Error writing results to file.");
 		}
@@ -115,28 +122,52 @@ public class DirectoryCompare {
 	
 	private static void processCompareResult(FileComparisonResult compareResult, File sourceFile, boolean firstCheck){
 		
-		switch (compareResult){
-			case doesntExist:	mDoesntExistResults.add(sourceFile);
-								break;
-								
-								//This case is only relevant for the first traversal
-			case differentSize:	if(firstCheck){
-									mDifferentSizeResults.add(sourceFile);
-								}
-								break;
-								
-								//This case is also only relevant for the first traversal
-			case differentDate:	if(firstCheck){
-									mDifferentDateResults.add(sourceFile);
-								}
-								break;
-			case match:			//Do nothing
+		
+		if(firstCheck){
+			//Most cases are relevant for the first check
+			switch(compareResult){
+				case doesntExistFile:
+					mDoesntExistFileResults.add(sourceFile);
+					break;
+					
+				case doesntExistFolder:
+					mDoesntExistFolderResults.add(sourceFile);
+					break;	
+					
+				case differentSizeFile:	
+					mDifferentSizeFileResults.add(sourceFile);
+					break;
+	
+				case differentSizeFolder:	
+					mDifferentSizeFolderResults.add(sourceFile);
+					break;	
+									
+				case differentDateFile:	
+					mDifferentDateFileResults.add(sourceFile);
+					break;
+					
+				case differentDateFolder:
+					//Do nothing
+				case match:	
+					//Do nothing
+			}
+		}
+		//Only the doesntExistFile and doesntExistFolder cases are relevant after firstCheck
+		else{
+			switch(compareResult){
+				case doesntExistFile:
+					mDoesntExistFileResults.add(sourceFile);
+					break;
+				case doesntExistFolder:
+					mDoesntExistFolderResults.add(sourceFile);
+					break;
+			}
 		}
 		
 	}
 	
 	private enum FileComparisonResult{
-		doesntExist, differentSize, differentDate, match
+		doesntExistFile, doesntExistFolder, differentSizeFile, differentSizeFolder, differentDateFile, differentDateFolder, match
 	}
 	
 	private static FileComparisonResult compareFiles(File checkFile, String baseSourceDir, String baseTargetDir){
@@ -146,14 +177,29 @@ public class DirectoryCompare {
 		
 		if(targetFile.exists()){
 			if(checkFile.length() != targetFile.length()){
-				return FileComparisonResult.differentSize;
+				if(checkFile.isDirectory()){
+					return FileComparisonResult.differentSizeFolder;
+				}
+				else{
+					return FileComparisonResult.differentSizeFile;
+				}
 			}
 			if(checkFile.lastModified() != targetFile.lastModified()){
-				return FileComparisonResult.differentDate;
+				if(checkFile.isDirectory()){
+					return FileComparisonResult.differentDateFolder;
+				}
+				else{
+					return FileComparisonResult.differentDateFile;
+				}
 			}
 			return FileComparisonResult.match;
 		}
-		return FileComparisonResult.doesntExist;
+		if(checkFile.isDirectory()){
+			return FileComparisonResult.doesntExistFolder;
+		}
+		else{
+			return FileComparisonResult.doesntExistFile;
+		}
 	}
 
 }

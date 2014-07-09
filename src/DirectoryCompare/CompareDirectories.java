@@ -15,6 +15,7 @@ import CommonTools.CommonTools;
 public class CompareDirectories {
 	private File mFormerDirectory;
 	private File mLatterDirectory;
+	private boolean mSaveFileLocsChanged = false;
 	private final String mSaveFilePath = "out/savedPrefs.cfg";
 	
 	public CompareDirectories(){
@@ -28,8 +29,10 @@ public class CompareDirectories {
 		//Get user input
 		this.getDirectoriesFromUser();
 		
-		//Save user's choice to disk
-		this.saveDirectoriesToDisk();
+		//Save user's choice to disk if the user specified a new location
+		if(mSaveFileLocsChanged == true){
+			this.saveDirectoriesToDisk();
+		}
 		
 	}
 	
@@ -95,6 +98,10 @@ public class CompareDirectories {
 	}
 	
 	private void getDirectoriesFromUser(){
+		String originalFormerDirectoryPath = mFormerDirectory.getAbsolutePath();
+		String originalLatterDirectoryPath = mLatterDirectory.getAbsolutePath();
+		
+		
 		//Allow the user to select the directories.
 		//Use the existing directory Files as the starting directory because
 		//by this point they've been loaded from the save file if relevant.
@@ -108,6 +115,15 @@ public class CompareDirectories {
 		if(mLatterDirectory == null){
 			//If the user didn't pick anything, then we exit the program because we have nothing to go on.
 			CommonTools.processError("You must select the latter directory.");
+		}
+		
+		/* 
+		 * If the directory specified by the user is different from the directory loaded from disk, then mark
+		 * a flag telling to save the new paths because there's no point in saving each time the program is run
+		 * if the directories are not changed.
+		 */
+		if(!mFormerDirectory.getAbsolutePath().equals(originalFormerDirectoryPath) || !mLatterDirectory.getAbsolutePath().equals(originalLatterDirectoryPath)){
+			mSaveFileLocsChanged = true;
 		}
 	}
 	
