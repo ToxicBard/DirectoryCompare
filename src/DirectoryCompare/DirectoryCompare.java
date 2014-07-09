@@ -109,13 +109,17 @@ public class DirectoryCompare {
 	private static void traverseDirectory(File[] myFiles, String baseSourceDir, String baseTargetDir, boolean firstCheck){
 		FileComparisonResult fileCompare;
 		
-		for(File file : myFiles){
-			fileCompare = compareFiles(file, baseSourceDir, baseTargetDir);
+		for(File loopFile : myFiles){
+			fileCompare = compareFiles(loopFile, baseSourceDir, baseTargetDir);
 			
-			processCompareResult(fileCompare, file, firstCheck);
+			processCompareResult(fileCompare, loopFile, firstCheck);
 			
-			if(file.isDirectory()){
-				traverseDirectory(file.listFiles(), baseSourceDir, baseTargetDir, firstCheck);
+			/* 
+			 * For some reason in Windows some folders (such as System Volume Information) 
+			 * return null for listFiles, thus we don't count those folders
+			 */
+			if(loopFile.isDirectory() && loopFile.listFiles() != null){
+				traverseDirectory(loopFile.listFiles(), baseSourceDir, baseTargetDir, firstCheck);
 			}
 		}
 	}
@@ -160,6 +164,8 @@ public class DirectoryCompare {
 					break;
 				case doesntExistFolder:
 					mDoesntExistFolderResults.add(sourceFile);
+					break;
+				default:
 					break;
 			}
 		}

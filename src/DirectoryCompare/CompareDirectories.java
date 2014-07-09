@@ -98,8 +98,13 @@ public class CompareDirectories {
 	}
 	
 	private void getDirectoriesFromUser(){
-		String originalFormerDirectoryPath = mFormerDirectory.getAbsolutePath();
-		String originalLatterDirectoryPath = mLatterDirectory.getAbsolutePath();
+		String originalFormerDirectoryPath = "";
+		String originalLatterDirectoryPath = "";
+		
+		if(mFormerDirectory != null && mLatterDirectory != null){
+			originalFormerDirectoryPath = mFormerDirectory.getAbsolutePath();
+			originalLatterDirectoryPath = mLatterDirectory.getAbsolutePath();
+		}
 		
 		
 		//Allow the user to select the directories.

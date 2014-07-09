@@ -74,4 +74,9 @@ public class CommonTools {
 		
 		return bw;
 	}
+	
+	public static boolean isDebugMode(){
+		return java.lang.management.ManagementFactory.getRuntimeMXBean().
+			    getInputArguments().toString().indexOf("jdwp") >= 0;
+	}
 }
