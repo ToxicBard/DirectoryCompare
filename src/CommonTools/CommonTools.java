@@ -42,18 +42,22 @@ public class CommonTools {
 	
 	public static BufferedWriter openWriteFile(String filePath){
 		File myFile = new File(filePath);
+		return openWriteFile(myFile);
+	}
+	
+	public static BufferedWriter openWriteFile(File writeFile){
 		FileWriter myFileWriter = null;
 		BufferedWriter bw;
 
 		try {
 			//If the parent directory doesn't exist, then create it
-			if(!myFile.getParentFile().exists()){
-				myFile.getParentFile().mkdirs();
+			if(!writeFile.getParentFile().exists()){
+				writeFile.getParentFile().mkdirs();
 			}
 			
 			//If the file doesn't exist, then create it.
-			if(!myFile.exists()){
-				myFile.createNewFile();
+			if(!writeFile.exists()){
+				writeFile.createNewFile();
 			}
 		} catch (IOException e) {
 			CommonTools.processError("Error creating save file.");
@@ -61,7 +65,7 @@ public class CommonTools {
 		
 		//Open the file for writing whether it already existed or not.
 		try {
-			myFileWriter = new FileWriter(myFile);
+			myFileWriter = new FileWriter(writeFile);
 		} catch (IOException e1) {
 			CommonTools.processError("Error Opening File Writer.");
 		}

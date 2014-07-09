@@ -41,7 +41,9 @@ public class DirectoryCompare {
 	}
 	
 	private static void writeResults(){
-		BufferedWriter bw = CommonTools.openWriteFile("out/results.txt");
+		File writeFile = new File("out/results.txt");
+		BufferedWriter bw = CommonTools.openWriteFile(writeFile);
+		String filePath = writeFile.getAbsolutePath();
 		
 		writeResultType(bw, mDoesntExistResults, "Doesn't Exist Results:");
 		writeResultType(bw, mDifferentSizeResults, "Different Size Results:");
@@ -53,9 +55,7 @@ public class DirectoryCompare {
 			CommonTools.processError("Error closing Result Writer");
 		}
 		
-		System.out.println("Finished...");
-		
-		//TODO Print the exact location of the results
+		System.out.println("File written to " + filePath);
 		
 	}
 	
