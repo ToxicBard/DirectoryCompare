@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import javax.swing.JFileChooser;
 
 import CommonTools.CommonTools;
+import CommonTools.LoadingThread;
 
 public class DirectoryCompare {
 	
@@ -15,11 +16,10 @@ public class DirectoryCompare {
 	private static ArrayList<File> mDifferentSizeResults = new ArrayList<File>();
 	private static ArrayList<File> mDifferentDateResults = new ArrayList<File>();
 
-	//TODO Add some sort of "in-progress" indicator
 	//TODO Add comments
+	//TODO Redesign with an object-oriented design?
 	//TODO Abstract the File object so that FTP support can be added
 	//TODO Add FTP support
-	//TODO Redesign with an object-oriented design?
 	public static void main(String[] args) {
 		
 		CompareDirectories myDirs = new CompareDirectories();
@@ -27,23 +27,41 @@ public class DirectoryCompare {
 		compareDirectories(myDirs);
 		writeResults();
 		
+		
 	}
 	
 	private static void compareDirectories(CompareDirectories compareDirs){
+		LoadingThread progressDisplay = null;
+		
 		System.out.println("Checking former directory...");
+		progressDisplay = new LoadingThread(50);
+		progressDisplay.start();
 		startDirectoryTraversal(compareDirs.getFormerDirectory(), compareDirs.getLatterDirectory(), true);
+		progressDisplay.stopRunning();
 		
 		System.out.println("");
 		
 		System.out.println("Checking latter directory...");
+		progressDisplay = new LoadingThread(50);
+		progressDisplay.start();
 		startDirectoryTraversal(compareDirs.getLatterDirectory(), compareDirs.getFormerDirectory(), false);
+		progressDisplay.stopRunning();
 		
 	}
 	
 	private static void writeResults(){
-		File writeFile = new File("out/results.txt");
-		BufferedWriter bw = CommonTools.openWriteFile(writeFile);
-		String filePath = writeFile.getAbsolutePath();
+		LoadingThread progressDisplay = new LoadingThread(50);
+		File writeFile;
+		BufferedWriter bw;
+		String filePath;
+		
+		System.out.println("Writing results to file...");
+		
+		progressDisplay.start();
+		
+		writeFile = new File("out/results.txt");
+		bw = CommonTools.openWriteFile(writeFile);
+		filePath = writeFile.getAbsolutePath();
 		
 		writeResultType(bw, mDoesntExistResults, "Doesn't Exist Results:");
 		writeResultType(bw, mDifferentSizeResults, "Different Size Results:");
@@ -54,6 +72,7 @@ public class DirectoryCompare {
 		} catch (IOException e) {
 			CommonTools.processError("Error closing Result Writer");
 		}
+		progressDisplay.stopRunning();
 		
 		System.out.println("File written to " + filePath);
 		
