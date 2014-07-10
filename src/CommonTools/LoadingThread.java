@@ -4,7 +4,7 @@ public class LoadingThread extends Thread {
 	private boolean mKeepRunning = true;
 	private boolean mDebugMode = false;
 	private int mProgressCounter = 0;
-	private int mExecDelay = 1000;
+	private int mExecDelay = 250;
 	
 	public LoadingThread(){
 		mDebugMode = CommonTools.isDebugMode();
