@@ -18,6 +18,9 @@ public class DirectoryCompare {
 	private static ArrayList<File> mDifferentSizeFolderResults = new ArrayList<File>();
 	private static ArrayList<File> mDifferentDateFileResults = new ArrayList<File>();
 
+	//TODO Are the directory paths being saved properly?
+	//TODO Can relative path be properly determined when launching from bat file in Windows?
+	//TODO Add a timer to count how long it takes to read files
 	//TODO Redesign with an object-oriented design?
 	//TODO Add comments
 	//TODO Abstract the File object so that FTP support can be added
