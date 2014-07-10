@@ -36,7 +36,7 @@ public class DirectoryCompare {
 		LoadingThread progressDisplay = null;
 		
 		System.out.println("Checking former directory...");
-		progressDisplay = new LoadingThread(50);
+		progressDisplay = new LoadingThread();
 		progressDisplay.start();
 		startDirectoryTraversal(compareDirs.getFormerDirectory(), compareDirs.getLatterDirectory(), true);
 		progressDisplay.stopRunning();
@@ -44,7 +44,7 @@ public class DirectoryCompare {
 		System.out.println("");
 		
 		System.out.println("Checking latter directory...");
-		progressDisplay = new LoadingThread(50);
+		progressDisplay = new LoadingThread();
 		progressDisplay.start();
 		startDirectoryTraversal(compareDirs.getLatterDirectory(), compareDirs.getFormerDirectory(), false);
 		progressDisplay.stopRunning();
@@ -52,7 +52,7 @@ public class DirectoryCompare {
 	}
 	
 	private static void writeResults(){
-		LoadingThread progressDisplay = new LoadingThread(50);
+		LoadingThread progressDisplay = new LoadingThread();
 		File writeFile;
 		BufferedWriter bw;
 		String filePath;

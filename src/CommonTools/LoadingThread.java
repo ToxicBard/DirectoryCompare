@@ -4,10 +4,9 @@ public class LoadingThread extends Thread {
 	private boolean mKeepRunning = true;
 	private boolean mDebugMode = false;
 	private int mProgressCounter = 0;
-	private int mExecDelay;
+	private int mExecDelay = 1000;
 	
-	public LoadingThread(int execDelay){
-		mExecDelay = execDelay;
+	public LoadingThread(){
 		mDebugMode = CommonTools.isDebugMode();
 	}
 	
@@ -28,7 +27,7 @@ public class LoadingThread extends Thread {
 	}
 	
 	private void printLoadingString(){
-		System.out.print(getLoadingCharacter(mProgressCounter));
+		System.out.print(getLoadingCharacter(mProgressCounter) + "\r");
 		mProgressCounter = (mProgressCounter + 1) % 4;
 	}
 	
