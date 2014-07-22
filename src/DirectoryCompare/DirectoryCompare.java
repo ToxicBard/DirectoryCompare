@@ -7,8 +7,8 @@ import java.util.ArrayList;
 
 import javax.swing.JFileChooser;
 
-import CommonTools.CommonTools;
-import CommonTools.LoadingThread;
+import commonTools.CommonTools;
+import commonTools.LoadingThread;
 
 public class DirectoryCompare {
 	

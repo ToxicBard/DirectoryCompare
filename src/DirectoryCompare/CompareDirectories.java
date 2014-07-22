@@ -10,7 +10,7 @@ import java.io.IOException;
 
 import javax.swing.JFileChooser;
 
-import CommonTools.CommonTools;
+import commonTools.CommonTools;
 
 public class CompareDirectories {
 	private File mFormerDirectory;
