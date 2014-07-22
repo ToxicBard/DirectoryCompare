@@ -36,44 +36,6 @@ public class CompareDirectories {
 		
 	}
 	
-	private void loadDirectoriesFromDisk(){
-		BufferedReader br = CommonTools.loadReadFile(mSaveFilePath);
-		String inputFormerDirectory = null;
-		String inputLatterDirectory = null;
-		
-		//Only try to read the file if it actually exists
-		if(br != null){
-
-			try {
-				inputFormerDirectory = br.readLine();
-				inputLatterDirectory = br.readLine();
-			} catch (IOException e) {
-				CommonTools.processError("Error reading File.");
-			}
-			
-			mFormerDirectory = new File(inputFormerDirectory);
-			mLatterDirectory = new File(inputLatterDirectory);
-			
-			/*
-			 * If the filenames provided by the file don't exist and aren't directories,
-			 * then clear out the directory properties.
-			 * In this case we want to fail silently and continue execution.
-			 */
-			if(this.directoriesExist() == false){
-				mFormerDirectory = null;
-				mLatterDirectory = null;
-			}
-			
-			try {
-				br.close();
-			} catch (IOException e) {
-				CommonTools.processError("Error closing file reader");
-			}
-		}
-		
-		
-	}
-	
 	private void saveDirectoriesToDisk(){
 		BufferedWriter bw = CommonTools.openWriteFile(mSaveFilePath);
 		
@@ -88,13 +50,6 @@ public class CompareDirectories {
 			CommonTools.processError("Error writing directories");
 		}
 		
-	}
-	
-	private boolean directoriesExist(){
-		if(mFormerDirectory.exists() && mLatterDirectory.exists() && mFormerDirectory.isDirectory() && mLatterDirectory.isDirectory()){
-			return true;
-		}
-		return false;
 	}
 	
 	private void getDirectoriesFromUser(){
@@ -130,22 +85,6 @@ public class CompareDirectories {
 		if(!mFormerDirectory.getAbsolutePath().equals(originalFormerDirectoryPath) || !mLatterDirectory.getAbsolutePath().equals(originalLatterDirectoryPath)){
 			mSaveFileLocsChanged = true;
 		}
-	}
-	
-	//Asks the user for a directory based on a starting point, which has presumably been loaded from disk.
-	private static File askUserForDirectory(String dialogTitle, File startingDirectory){
-		JFileChooser fileChooser = new JFileChooser();
-		
-		fileChooser.setCurrentDirectory(startingDirectory);
-		fileChooser.setDialogTitle(dialogTitle);
-		fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-		fileChooser.setAcceptAllFileFilterUsed(false);
-		
-		if(fileChooser.showOpenDialog(fileChooser) == JFileChooser.APPROVE_OPTION){
-			return fileChooser.getSelectedFile();
-		}
-		
-		return null;
 	}
 	
 	public File getFormerDirectory(){
