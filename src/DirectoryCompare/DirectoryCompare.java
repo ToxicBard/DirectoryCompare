@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import javax.swing.JFileChooser;
 
 import commonTools.CommonTools;
+import commonTools.FileTools;
 import commonTools.LoadingThread;
 
 public class DirectoryCompare {
@@ -65,7 +66,7 @@ public class DirectoryCompare {
 		progressDisplay.start();
 		
 		writeFile = new File("out/results.txt");
-		bw = CommonTools.openWriteFile(writeFile);
+		bw = FileTools.openWriteFile(writeFile);
 		filePath = writeFile.getAbsolutePath();
 		
 		writeResultType(bw, mDoesntExistFolderResults, "Doesn't Exist Folder Results:");
